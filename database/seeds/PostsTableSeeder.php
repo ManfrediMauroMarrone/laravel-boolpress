@@ -15,13 +15,25 @@ class PostsTableSeeder extends Seeder
     {
       for ($i=0; $i < 100; $i++) {
         $newPost = new Post();
-        $newPost->name = $faker->firstName();
-        $newPost->lastname = $faker->lastName();
-        $newPost->username = $faker->userName();
-        $newPost->content = $faker->text($maxNbChars = 200);
-        $newPost->birth = $faker->date();
+        $newPost->title = $faker->sentence();
+        $newPost->content = $faker->text(500);
+        // creo lo slug
+        $slug = Str::slug($newPost->title);
+        $slugBase = $slug;
+        // verifico che lo slag non sia presente nel database
+        $postPresente =  Post::where('slug', $slug)->first();
+        $contatore = 1;
+        // entro nel ciclo se trovo un posto con lo stesso slug
+        while ($postPresente) {
+          // genero uno slag aggiungengo un contatore
+          $slug = $slugBase . '-' . $contatore;
+          $contatore++;
+          $postPresente =  Post::where('slug', $slug)->first();
+        }
+        // se esco dal ciclo so che lo slug non è già presente nel db
+        // assegno lo slug al nuovo post
+        $newPost->slug = $slug;
         $newPost->save();
-
       }
     }
 }
