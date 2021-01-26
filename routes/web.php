@@ -13,10 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'HomeController@index')->name('index');
+
+// rimuovo la possibilità di fare login
+Auth::routes(['register' => false]);
+
+
+// creo un gruppo di rotte con delle caratteristiche in comune
+Route::middleware('auth')->namespace('admin')->prefix('admin')->name('admin.')->group(function(){
+
+  Route::get('/', 'HomeController@index')->name('index');
 });
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
