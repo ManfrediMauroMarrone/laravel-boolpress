@@ -17,6 +17,8 @@ Route::get('/', 'HomeController@index')->name('index');
 
 Route::get('/contatti', 'HomeController@contatti')->name('contatti');
 
+Route::get('/posts', 'PostController@index')->name('posts.index');
+
 // rimuovo la possibilità di fare login
 Auth::routes(['register' => false]);
 
@@ -25,4 +27,5 @@ Auth::routes(['register' => false]);
 Route::middleware('auth')->namespace('admin')->prefix('admin')->name('admin.')->group(function(){
 
   Route::get('/', 'HomeController@index')->name('index');
+  Route::resource('/posts', 'PostController');
 });
