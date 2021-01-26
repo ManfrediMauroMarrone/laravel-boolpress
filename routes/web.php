@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'HomeController@index')->name('index');
 
+Route::get('/contatti', 'HomeController@contatti')->name('contatti');
+
 // rimuovo la possibilità di fare login
 Auth::routes(['register' => false]);
 
