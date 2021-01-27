@@ -14,7 +14,10 @@ class PostController extends Controller
     return view('guest.posts.index', $data);
   }
 
-  public function show(Post $post) {
+  public function show($slug) {
+    // non usando più l'id per trovare il post
+    // creo un where per ricavare il post con lo slug giusto
+    $post = Post::where('slug', $slug)->first();
     if ($post) {
       $data = [
         'post' => $post

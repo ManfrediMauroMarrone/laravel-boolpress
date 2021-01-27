@@ -8,7 +8,8 @@
         <ul>
           @foreach ($posts as $post)
             <li>
-              <a href="{{ route('posts.show', ['post' => $post->id]) }}">
+              {{-- utilizzo lo slug per crare l'url della pagina show di ogni post --}}
+              <a href="{{ route('posts.show', ['slug' => $post->slug]) }}">
                 {{ $post->title }}
 
               </a>
