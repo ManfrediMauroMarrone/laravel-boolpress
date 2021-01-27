@@ -77,7 +77,7 @@ class PostController extends Controller
         $data = [
           'post' => $post
         ];
-        return view('admin.post.show', $data);
+        return view('admin.posts.show', $data);
       }
       abort(404);
     }
@@ -88,9 +88,16 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+      if ($post) {
+        $data = [
+          'post' => $post
+        ];
+        return view('admin.posts.edit', $data);
+      }
+
+      abort(404);
     }
 
     /**
@@ -100,9 +107,32 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        //
+      $form_data = $request->all();
+      // se il titolo viene modificato allora modifico pure lo Slug
+      if ($form_data['title'] != $post->title) {
+        // il titolo è stato modificato quindi modifico lo slug
+        // genero lo slug
+        $slug = Str::slug($form_data['title']);
+        $slugBase = $slug;
+        // verifico che lo slag non sia presente nel database
+        $postPresente =  Post::where('slug', $slug)->first();
+        $contatore = 1;
+        // entro nel ciclo se trovo un posto con lo stesso slug
+        while ($postPresente) {
+          // genero uno slag aggiungengo un contatore
+          $slug = $slugBase . '-' . $contatore;
+          $contatore++;
+          $postPresente =  Post::where('slug', $slug)->first();
+        }
+        // se esco dal ciclo so che lo slug non è già presente nel db
+        // assegno lo slug al nuovo post
+        $form_data['title'] = $slug;
+      }
+      // uso la funzione update per modificare i dati
+      $post->update($form_data);
+      return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -111,8 +141,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        //
+      $post->delete();
+      return redirect()->route('admin.posts.index');
     }
 }
