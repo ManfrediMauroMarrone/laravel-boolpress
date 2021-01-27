@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
       <div class="col-12">
-        <div class="table">
+        <table class="table">
           <thead>
             <tr>
               <th>ID</th>
@@ -25,10 +25,15 @@
                     Visualizza
                   </a>
                 </td>
+                <td>
+                  <a class="btn btn-success" href="{{ route('admin.posts.create')}}">
+                    Crea Post
+                  </a>
+                </td>
               </tr>
             @endforeach
           </tbody>
-        </div>
+        </table>
       </div>
     </div>
 </div>

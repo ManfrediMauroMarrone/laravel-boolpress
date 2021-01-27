@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Post;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -28,7 +29,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+      return view('admin.posts.create');
     }
 
     /**
@@ -39,7 +40,29 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $data = $request->all();
+
+      $newPost = new Post();
+      $newPost->fill($data);
+      // genero lo slug
+      $slug = Str::slug($newPost->title);
+      $slugBase = $slug;
+      // verifico che lo slag non sia presente nel database
+      $postPresente =  Post::where('slug', $slug)->first();
+      $contatore = 1;
+      // entro nel ciclo se trovo un posto con lo stesso slug
+      while ($postPresente) {
+        // genero uno slag aggiungengo un contatore
+        $slug = $slugBase . '-' . $contatore;
+        $contatore++;
+        $postPresente =  Post::where('slug', $slug)->first();
+      }
+      // se esco dal ciclo so che lo slug non è già presente nel db
+      // assegno lo slug al nuovo post
+      $newPost->slug = $slug;
+      $newPost->save();
+
+      return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -48,9 +71,15 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        //
+      if ($post) {
+        $data = [
+          'post' => $post
+        ];
+        return view('admin.post.show', $data);
+      }
+      abort(404);
     }
 
     /**
