@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Post;
 use App\Category;
+use App\Tag;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -31,9 +32,11 @@ class PostController extends Controller
     public function create()
     {
       $categories = Category::all();
+      $tags = Tag::all();
 
       $data = [
-        'categories' => $categories
+        'categories' => $categories,
+        'tags' => $tags
       ];
       return view('admin.posts.create', $data);
     }
@@ -67,6 +70,9 @@ class PostController extends Controller
       // assegno lo slug al nuovo post
       $newPost->slug = $slug;
       $newPost->save();
+      // aggiungo i tag al post
+      // qui uso la funzione tags() perché non voglio leggere i valori ma aggiungere una funzione
+      $newPost->tags()->sync($data['tags']);
 
       return redirect()->route('admin.posts.index');
     }
