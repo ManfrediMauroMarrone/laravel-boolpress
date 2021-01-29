@@ -17,6 +17,12 @@
             -
           @endif
         </p>
+
+        <p>Tags:
+          @foreach ($post->tags as $tag)
+            {{ $tag->name }}
+          @endforeach
+        </p>
       </div>
     </div>
   </div>
