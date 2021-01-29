@@ -103,11 +103,13 @@ class PostController extends Controller
     public function edit(Post $post)
     {
       $categories = Category::all();
+      $tags = Tag::all();
 
       if ($post) {
         $data = [
           'post' => $post,
-          'categories' => $categories
+          'categories' => $categories,
+          'tags' => $tags
         ];
         return view('admin.posts.edit', $data);
       }
@@ -147,6 +149,7 @@ class PostController extends Controller
       }
       // uso la funzione update per modificare i dati
       $post->update($form_data);
+      $post->tags()->sync($form_data['tags']);
       return redirect()->route('admin.posts.index');
     }
 
