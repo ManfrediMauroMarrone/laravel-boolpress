@@ -48,9 +48,11 @@
                   <p>Seleziona i tag</p>
                   @foreach ($tags as $tag)
                     <div class="form-check">
+                      {{-- se ci sono degli errori allora tramite old() ricompilo i campi con gli ultimi valori --}}
                       @if ($errors->any())
                         <input name="tags[]" class="form-check-input" type="checkbox" value="{{ $tag->id }}" {{ in_array($tag->id, old('tags', [])) ? 'checked=checked' : '' }}>
                       @else
+                        {{-- se non ci sono errori, vuol dire che è la prima volta che apro la pagina, quindi compilo i campi con i valori che ho nel database --}}
                         <input name="tags[]" class="form-check-input" type="checkbox" value="{{ $tag->id }}"
                         {{ $post->tags->contains($tag) ? 'checked=checked' : ''}}>
 
