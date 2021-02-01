@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/posts', 'Api\PostController@index');
+Route::post('/posts', 'Api\PostController@index')->middleware('api_token_check');
