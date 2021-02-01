@@ -49,8 +49,17 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-      $data = $request->all();
+      // verifico se i dati inseriti nel form sono validi
+      $request->validate([
+        'title' => 'required|max:255',
+        'content' => 'required',
+        // specifico che il category_id può essere null
+        'category_id' => 'nullable|exists:categories,id',
+        'tags' => 'exists:tags,id'
 
+      ]);
+
+      $data = $request->all();
       $newPost = new Post();
       $newPost->fill($data);
       // genero lo slug
@@ -70,12 +79,16 @@ class PostController extends Controller
       // assegno lo slug al nuovo post
       $newPost->slug = $slug;
       $newPost->save();
-      // aggiungo i tag al post
       // qui uso la funzione tags() perché non voglio leggere i valori ma aggiungere una funzione
-      $newPost->tags()->sync($data['tags']);
+      // verifico che l'array esista
+      if (array_key_exists('tags', $data)) {
+        // aggiungo i tag al post
+        $newPost->tags()->sync($data['tags']);
+      }
 
       return redirect()->route('admin.posts.index');
     }
+
 
     /**
      * Display the specified resource.
@@ -126,6 +139,15 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+      // verifico se i dati inseriti nel form sono validi
+      $request->validate([
+        'title' => 'required|max:255',
+        'content' => 'required',
+        // specifico che il category_id può essere null
+        'category_id' => 'nullable|exists:categories,id',
+        'tags' => 'exists:tags,id'
+
+      ]);
       $form_data = $request->all();
       // se il titolo viene modificato allora modifico pure lo Slug
       if ($form_data['title'] != $post->title) {
@@ -149,7 +171,11 @@ class PostController extends Controller
       }
       // uso la funzione update per modificare i dati
       $post->update($form_data);
-      $post->tags()->sync($form_data['tags']);
+      // verifico che l'array esista
+      if (array_key_exists('tags', $form_data)) {
+        // aggiungo i tag al post
+        $post->tags()->sync($data['tags']);
+      }
       return redirect()->route('admin.posts.index');
     }
 
